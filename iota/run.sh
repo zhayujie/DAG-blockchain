@@ -51,5 +51,27 @@ function addNeighbors() {
             "udp://192.168.5.63:14600", "udp://192.168.5.66:14600"]}'
 }
 
-startIota
-addNeighbors
+function removeSelf() {
+    lastIP=("56" "57" "58" "59" "60" "61" "62" "63" "66")
+    i=0
+    while [[ i -lt 8 ]]; do
+        NUM=${lastIP[$i]}
+        curl http://192.168.5."$NUM":14700 \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            -H 'X-IOTA-API-Version: 1' \
+            -d '{"command": "removeNeighbors", "uris": ["udp://http://192.168.5.'$NUM':14600"]}'
+        ((i++))
+    done
+   
+}
+
+function killPre() {
+    pid=$(ps -aux|grep 14700|grep -v "grep"|awk '{print $2}')
+    if [[ $? -eq 0 ]]; then
+        kill -9 $(pid)
+    fi
+}
+#startIota
+#addAllNeighbors
+removeSelf

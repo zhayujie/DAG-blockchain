@@ -7,6 +7,7 @@ from datetime import datetime
 import threading
 from pprint import pprint
 import threadpool
+from multiprocessing import Pool
 
 adds = []
 SIZE = 100
@@ -34,14 +35,14 @@ def single_thread_tx(size):
     print(end - start)
 
 # send a transfer (4 tx in a bundle) by a single thread
-def single_thread_transfer(size):
+def single_thread_transfer(add_list):
     url = "http://localhost:14700"
     start = int(time.time())
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-    for i in range(0, size):
+    for i in add_list:
         print(i)
-        tx.send_transfer(url, adds[i], adds[size], i)     
+        tx.send_transfer(url, adds[i], adds[SIZE], i)     
     end = int(time.time())
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print(end - start)
@@ -49,17 +50,30 @@ def single_thread_transfer(size):
 def multi_process_tx(size):
     pid = os.fork()
     if pid == 0:
-        single_thread_transfer(size)
-        print('tx by thread 0')
+        ppid1 = os.fork()
+        if ppid1 == 0:
+            single_thread_transfer([10, 11, 12])
+            print('tx by thread 0')
+            os._exit(os.EX_OK)
+        else:
+            single_thread_transfer([13, 14])
+            print('tx by thread 1')
+            os._exit(os.EX_OK)
     else:
-        single_thread_transfer(size)
-        print('tx by thread 1')
-        os._exit(os.EX_OK)
+        ppid2 = os.fork()
+        if ppid2 == 0:
+            single_thread_transfer([15, 16, 17])
+            print('tx by thread 2')
+            os._exit(os.EX_OK)
+        else:
+            single_thread_transfer([18, 19])
+            print('tx by thread 3')
+            os._exit(os.EX_OK)
     return
 
 
 def _transfer_task(index):
-    last_num = neighbors[index % 8]
+    last_num = neighbors[index % 7 + 1]
     url = "http://192.168.5." + last_num + ":14700"
     print(index)
     tx.send_transfer(url, adds[index], adds[SIZE], index)     
@@ -75,7 +89,7 @@ def multi_thread_tx(size):
     print(args)
     '''
     args = list(range(0, size))
-    pool = threadpool.ThreadPool(16) 
+    pool = threadpool.ThreadPool(8) 
     requests = threadpool.makeRequests(_transfer_task, args) 
     start = int(time.time())
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -85,11 +99,36 @@ def multi_thread_tx(size):
     end = int(time.time())
     print(end - start)
 
+
+def multi_transfer_with_pool(size):
+    p = Pool(8)
+    print('task start!')
+
+    for i in range(0, size):
+        p.apply_async(_transfer_task, args=(i, ))
+
+    p.close()
+    p.join()
+    
+
+
+
 if __name__ == '__main__':
     adds = get_address()
+
+    start = int(time.time())
+    print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
     #single_thread_tx(3)
     #single_thread_transfer(3)
-    #multi_process_tx(5)
-    multi_thread_tx(100)
+    #multi_process_tx(1)
+    #multi_thread_tx(100)
+    
+
+    multi_transfer_with_pool(100)
+
+    end = int(time.time())
+    print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print(end - start)
 
 
