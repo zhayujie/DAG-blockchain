@@ -26,21 +26,20 @@ def get_bundles():
     for tx in txs:
         pprint(vars(tx))
 
-def send_transfer():
-    add1 = iota.Address(b'TNNAFSHKQHBHRZUBE9ZFPUFKRAZVSUZDXIJEMXOGFRCOAYOBHFIPBKDPOROC9VKJBPRMYUEXGLDUU9II9')
-    add2 = iota.Address(b'CAKYWFCCGEIBNHAIRRNZENH9OSMLZBNUNTSXNSZPD9FPFCOBKFPCR9JQQSJDTFZQFKV9CSPRDUOKJMEAX')
-    unspend = iota.Address(b'BUFVPNVBDXLJSJTVBZTKLUOBVZIMXZODRTHOFGNNJOAXJOKUNIDLFMYSTXMUAYDBLHGTGFFSECFCQV9GZ')
-    add1.key_index = 4
-    add1.security_level = 2
+def send_transfer(url, add1, add2, key_index):
+    add1 = iota.Address(add1, key_index=key_index, security_level=2)
+    add2 = iota.Address(add2)
+    # unspend = iota.Address(b'BUFVPNVBDXLJSJTVBZTKLUOBVZIMXZODRTHOFGNNJOAXJOKUNIDLFMYSTXMUAYDBLHGTGFFSECFCQV9GZ')
+    #add1.key_index = 4
+    #add1.security_level = 2
 
     # 1. create transactions
     pt = iota.ProposedTransaction(
         address=add2, 
         tag=iota.Tag(b'HRIBEK999IOTA999TUTORIAL'),
-        value=10
+        value=100
     )
-    api = iota.Iota("http://localhost:14700", 
-        seed=b'N9MOJKSFIHTPRIBYDIWEHLRNBLNFSLWPVNYTEGBIRAOZRJSIBXDNCDBVPSEJRFVRSMISGQMSLAGZEVQTR') 
+    api = iota.Iota(url, seed=b'N9MOJKSFIHTPRIBYDIWEHLRNBLNFSLWPVNYTEGBIRAOZRJSIBXDNCDBVPSEJRFVRSMISGQMSLAGZEVQTR') 
     res = api.send_transfer(
         depth=3,
         transfers=[pt],

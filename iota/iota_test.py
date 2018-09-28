@@ -16,16 +16,31 @@ def generate_address():
         fs.write(str(results[num-1]) +';' + str(2779530283277761-1000000000*(num-1)))
 
 
-def single_thread_one_tx():
+def single_thread_one_tx(size):
+
     start = int(time.time())
-    for i in range(0, 10):
+    for i in range(0, size):
         tx.send_text()
         print(i)
     end = int(time.time())
     print(end - start)
 
+def single_thread_transfer(size):
+    adds = []
+    with open('./Snapshot.txt', 'r') as fs:
+        add = fs.readline().split(':')[0]
+        adds.append(add)
+    url = "http://localhost:14700"
+    start = int(time.time())
+
+    for i in range(0, size-1):
+        print(i)
+        send_transfer(url, adds[i], adds[size-1], i)     
+    end = int(time.time())
+    print(end - start)
 
 
 if __name__ == '__main__':
-    #single_thread_one_tx()
-    generate_address()
+    #single_thread_one_tx(10)
+    #generate_address()
+    single_thread_transfer(10)
