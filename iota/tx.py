@@ -3,29 +3,6 @@
 import iota
 from pprint import pprint
 
-# transfer between trytes and trits
-def trytes_encode():
-    trytes_bytes = 'YZJEATEQ9JKLZ'
-    trytes = iota.TryteString(trytes_bytes)
-    pprint(trytes)
-    trits = trytes.as_trits()
-    print(trits)
-
-# getNodeInfo
-def get_node_info():
-    node_url = 'http://localhost:14700'
-    api = iota.Iota(node_url)
-    res = api.get_node_info()
-    print(res)
-
-# query the tx details in bundle 
-def get_bundles():
-    api = iota.Iota("http://localhost:14700") 
-    pb = api.get_bundles('RGREW9FJKCFZQUYAGJXGYMKJAPSHQ9OAEEHCCINOVKKMSUDINSBGQTU9TRC9JB9UTXQTPZBQTMPGA9999')
-    txs = vars(pb['bundles'][0])['transactions']
-    for tx in txs:
-        pprint(vars(tx))
-
 def send_transfer(url, add1, add2, key_index):
     add1 = iota.Address(add1, key_index=key_index, security_level=2)
     add2 = iota.Address(add2)
@@ -45,10 +22,11 @@ def send_transfer(url, add1, add2, key_index):
         transfers=[pt],
         inputs=[add1],
         #change_address=unspend,
-        min_weight_magnitude=14 
+        min_weight_magnitude=14
     ) 
+    
+    #pprint(vars(res['bundle'])['transactions']) 
     '''
-    pprint(vars(res['bundle'])['transactions']) 
     txs = vars(res['bundle'])['transactions']
     for tx in txs:
         pprint(vars(tx))
@@ -56,7 +34,7 @@ def send_transfer(url, add1, add2, key_index):
     return res
 
 
-def send_text():
+def send_text(url):
     add1 = iota.Address(b'TNNAFSHKQHBHRZUBE9ZFPUFKRAZVSUZDXIJEMXOGFRCOAYOBHFIPBKDPOROC9VKJBPRMYUEXGLDUU9II9')
     add2 = iota.Address(b'CAKYWFCCGEIBNHAIRRNZENH9OSMLZBNUNTSXNSZPD9FPFCOBKFPCR9JQQSJDTFZQFKV9CSPRDUOKJMEAX')
 
@@ -73,15 +51,13 @@ def send_text():
         tag=iota.Tag(b'HRIBEK999IOTA999TUTORIAL'),
         value=0
     )
-    api = iota.Iota("http://localhost:14700", 
-        seed=b'N9MOJKSFIHTPRIBYDIWEHLRNBLNFSLWPVNYTEGBIRAOZRJSIBXDNCDBVPSEJRFVRSMISGQMSLAGZEVQTR') 
-    
+    api = iota.Iota(url, seed=b'N9MOJKSFIHTPRIBYDIWEHLRNBLNFSLWPVNYTEGBIRAOZRJSIBXDNCDBVPSEJRFVRSMISGQMSLAGZEVQTR') 
     res = api.send_transfer(
         depth=3,
         transfers=[pt, pt2, pt, pt2],
         #inputs=[add1],
         #change_address=unspend,
-        min_weight_magnitude=14 
+        min_weight_magnitude=14
     ) 
 
 

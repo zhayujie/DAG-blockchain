@@ -5,7 +5,7 @@ curl http://localhost:14700 \
   -H 'X-IOTA-API-Version: 1' \
   -d '{
     "command": "getBalances", 
-    "addresses": ["TNNAFSHKQHBHRZUBE9ZFPUFKRAZVSUZDXIJEMXOGFRCOAYOBHFIPBKDPOROC9VKJBPRMYUEXGLDUU9II9"], 
+    "addresses": ["FCFOXYDMOCKOQDP9XHMAXWJIXNHOZNZDBUBTVMY9ZGQZTQLNRQ9TLRZGLDMGDEIOGEOHULWMGWRMQSGXX"], 
     "threshold": 100
 }'
 
@@ -49,7 +49,7 @@ curl http://localhost:14700 \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'X-IOTA-API-Version: 1' \
-  -d '{"command": "removeNeighbors", "uris": ["udp://192.168.5.63:14600"]}'
+  -d '{"command": "removeNeighbors", "uris": ["udp://192.168.5.58:14600"]}'
 
 # addAllNeighbors
 curl http://localhost:14700 \
