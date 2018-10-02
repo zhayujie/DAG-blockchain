@@ -35,49 +35,20 @@ def single_thread_tx(size):
     print(end - start)
 
 # send a transfer (4 tx in a bundle) by a single thread
-def single_thread_transfer(add_list):
+def single_thread_transfer(adds_index_list):
     url = "http://localhost:14700"
     start = int(time.time())
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-    for i in add_list:
+    for i in adds_index_list:
         print(i)
         tx.send_transfer(url, adds[i], adds[SIZE], i)     
     end = int(time.time())
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print(end - start)
 
-def multi_process_tx(size):
-    pid = os.fork()
-    if pid == 0:
-        ppid1 = os.fork()
-        if ppid1 == 0:
-            single_thread_transfer([10, 11, 12])
-            print('tx by thread 0')
-            os._exit(os.EX_OK)
-        else:
-            single_thread_transfer([13, 14])
-            print('tx by thread 1')
-            os._exit(os.EX_OK)
-    else:
-        ppid2 = os.fork()
-        if ppid2 == 0:
-            single_thread_transfer([15, 16, 17])
-            print('tx by thread 2')
-            os._exit(os.EX_OK)
-        else:
-            single_thread_transfer([18, 19])
-            print('tx by thread 3')
-            os._exit(os.EX_OK)
-    return
 
-
-def _transfer_task(index):
-    last_num = neighbors[index % 7 + 1]
-    url = "http://192.168.5." + last_num + ":14700"
-    print(index)
-    tx.send_transfer(url, adds[index], adds[SIZE], index)     
-
+# multi-thread by thread pool 
 def multi_thread_tx(size):
     '''
     args = []
@@ -100,8 +71,42 @@ def multi_thread_tx(size):
     print(end - start)
 
 
+# multi-process by fork
+def multi_process_tx(size):
+    pid = os.fork()
+    if pid == 0:
+        ppid1 = os.fork()
+        if ppid1 == 0:
+            single_thread_transfer([0])
+            print('tx by thread 0')
+            os._exit(os.EX_OK)
+        else:
+            single_thread_transfer([1])
+            print('tx by thread 1')
+            os._exit(os.EX_OK)
+    else:
+        ppid2 = os.fork()
+        if ppid2 == 0:
+            single_thread_transfer([2])
+            print('tx by thread 2')
+            os._exit(os.EX_OK)
+        else:
+            single_thread_transfer([3])
+            print('tx by thread 3')
+            os._exit(os.EX_OK)
+    return
+    
+
+def _transfer_task(index):
+    last_num = neighbors[index % 7 + 1]
+    url = "http://192.168.5." + last_num + ":14700"
+    print(index)
+    tx.send_transfer(url, adds[index], adds[SIZE], index) 
+
+
+# multi-process by process pool
 def multi_transfer_with_pool(size):
-    p = Pool(8)
+    p = Pool(4)
     print('task start!')
 
     for i in range(0, size):
@@ -110,8 +115,6 @@ def multi_transfer_with_pool(size):
     p.close()
     p.join()
     
-
-
 
 if __name__ == '__main__':
     adds = get_address()
@@ -125,7 +128,7 @@ if __name__ == '__main__':
     #multi_thread_tx(100)
     
 
-    multi_transfer_with_pool(100)
+    multi_transfer_with_pool(4)
 
     end = int(time.time())
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

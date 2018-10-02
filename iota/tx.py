@@ -60,13 +60,6 @@ def send_text(url):
         min_weight_magnitude=14
     ) 
 
-
-def get_tips():
-    api = iota.Iota("http://localhost:14700") 
-    tips = api.get_transactions_to_approve(depth=15)
-    return tips
-
-
 if __name__ == '__main__':
    # res = send_transfer()
    send_text()

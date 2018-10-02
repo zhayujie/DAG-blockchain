@@ -20,9 +20,9 @@ def get_node_info():
     print(res)
 
 # query the tx details in bundle 
-def get_bundles():
+def get_bundles(tx_hash):
     api = iota.Iota("http://localhost:14700") 
-    pb = api.get_bundles('RGREW9FJKCFZQUYAGJXGYMKJAPSHQ9OAEEHCCINOVKKMSUDINSBGQTU9TRC9JB9UTXQTPZBQTMPGA9999')
+    pb = api.get_bundles(tx_hash)
     txs = vars(pb['bundles'][0])['transactions']
     for tx in txs:
         pprint(vars(tx))

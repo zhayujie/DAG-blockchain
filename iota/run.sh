@@ -72,6 +72,7 @@ function killPre() {
         kill -9 $(pid)
     fi
 }
-#startIota
-#addAllNeighbors
-removeSelf
+
+startIota
+addNeighbors
+#removeSelf

@@ -10,9 +10,9 @@ curl http://192.168.5.57:14700 \
   -H 'X-IOTA-API-Version: 1' \
   -d '{"command": "removeNeighbors", "uris": ["udp://192.168.5.57:14600"]}'
 
+  -H 'Content-Type: application/json' \
 curl http://192.168.5.58:14700 \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'X-IOTA-API-Version: 1' \
   -d '{"command": "removeNeighbors", "uris": ["udp://192.168.5.58:14600"]}'
 
