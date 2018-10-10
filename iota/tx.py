@@ -6,7 +6,7 @@ from pprint import pprint
 def send_transfer(url, add1, add2, key_index):
     add1 = iota.Address(add1, key_index=key_index, security_level=2)
     add2 = iota.Address(add2)
-    # unspend = iota.Address(b'BUFVPNVBDXLJSJTVBZTKLUOBVZIMXZODRTHOFGNNJOAXJOKUNIDLFMYSTXMUAYDBLHGTGFFSECFCQV9GZ')
+    unspend = iota.Address(b'COIHHICCHC9JXNBJZXCNNHCRYGEVKKZKJPVJGTEQX9VPWYOJVLEZMBYHJRH9OIRXVFJVTJZHPZMZZYEYB')
     #add1.key_index = 4
     #add1.security_level = 2
 
@@ -21,7 +21,9 @@ def send_transfer(url, add1, add2, key_index):
         depth=3,
         transfers=[pt],
         inputs=[add1],
-        #change_address=unspend,
+        # if without the change address, iota will generate new address automatically
+        # which may waste a lot of time. 
+        change_address=unspend,
         min_weight_magnitude=14
     ) 
     
@@ -57,8 +59,15 @@ def send_text(url):
         transfers=[pt, pt2, pt, pt2],
         #inputs=[add1],
         #change_address=unspend,
-        min_weight_magnitude=14
+        min_weight_magnitude=9
     ) 
+
+
+def get_tips():
+    api = iota.Iota("http://localhost:14700") 
+    tips = api.get_transactions_to_approve(depth=15)
+    return tips
+
 
 if __name__ == '__main__':
    # res = send_transfer()

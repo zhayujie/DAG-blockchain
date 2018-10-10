@@ -19,7 +19,7 @@ def get_node_info():
     res = api.get_node_info()
     print(res)
 
-# query the tx details in bundle 
+# query thew tx details in bundle 
 def get_bundles(tx_hash):
     api = iota.Iota("http://localhost:14700") 
     pb = api.get_bundles(tx_hash)
@@ -43,4 +43,4 @@ def generate_address(num):
 
 
 if __name__ == '__main__':
-    generate_address(100)
+    generate_address(300)
